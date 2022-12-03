@@ -1,0 +1,34 @@
+{
+  "legal_status": [
+    {
+      "status": "Entrepreneur individuel"
+    },
+    {
+      "status": "Groupement de droit privé non doté de la personnalité morale"
+    },
+    {
+      "status": "Indivision"
+    },
+    {
+      "status": "Indivision entre personnes physiques"
+    },
+    {
+      "status": "Indivision avec personne morale"
+    },
+    {
+      "status": "Société créée de fait"
+    },
+    {
+      "status": "Société créée de fait entre personnes physiques"
+    },
+    {
+      "status": "Société créée de fait avec personne morale"
+    },
+    {
+      "status": "Société en participation"
+    },
+    {
+      "status": "Société en participation entre personnes physiques"
+    }
+  ]
+}
