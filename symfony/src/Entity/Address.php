@@ -28,7 +28,7 @@ class Address
     #[ORM\Column(length: 255)]
     private ?string $streetType = null;
 
-    #[ORM\ManyToOne(inversedBy: 'Address')]
+    #[ORM\ManyToOne(inversedBy: 'Address', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company = null;
 

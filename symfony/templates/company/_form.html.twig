@@ -1,0 +1,135 @@
+
+{#<script>#}
+    {#$( function() {#}
+        {#$( "#datepicker" ).datepicker();#}
+    {#} );#}
+{#</script>#}
+
+{#<p>Date: <input type="text" id="datepicker"></p>#}
+
+
+<div class="col-md-6">
+    {{ form_start(form) }}
+    <h2>Company Form</h2>
+    <div class="form-group">
+        <label>Nom de l'entreprise</label>
+        {{ form_widget(form._token) }}
+        {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder':'Enter company name'}}) }}
+    </div>
+    <div class="form-group">
+        <label>SIREN</label>
+        {{ form_widget(form.SIREN, {'attr': {'class': 'form-control', 'placeholder':'Enter company SIREN'}}) }}
+    </div>
+    <div class="form-group">
+        <label>Ville d'imatriculation</label>
+        {{ form_widget(form.registrationCity, {'attr': {'class': 'form-control', 'placeholder':'Enter company registration city'}}) }}
+    </div>
+    <div class="form-group">
+        <label>Date d'imatriculation</label>
+        {{ form_widget(form.registrationDate, {'attr': {'class': '', 'placeholder':''}}) }}
+    </div>
+    <div class="form-group">
+        <label>Capital</label>
+        {{ form_widget(form.Capital, {'attr': {'class': ''}}) }}
+    </div>
+    <div class="form-group">
+        <label>Status legale</label>
+        {{ form_widget(form.legalStatus, {'attr': {'class': 'form-control', 'placeholder':'Enter company legal status'}}) }}
+    </div>
+
+    <div class="addresses js-genus-scientist-wrapper">
+        <h3>Addresses</h3>
+        <ul id="address-fields-list"
+            data-prototype="{{ form_widget(form.Address.vars.prototype)|e }}"
+            data-widget-tags="{{ '<li></li>'|e }}"
+            data-widget-counter="{{ form.Address|length }}">
+            {% for address in form.Address %}
+                <div class="js-genus-scientist-item">
+                    <div class="form-group">
+                        <label>Numero</label>
+                        {{ form_widget(address.number, {'attr': {'class': 'form-control', 'placeholder':'Enter address number'}}) }}
+                    </div>
+                    <div class="form-group">
+                        <label>Nom de rue</label>
+                        {{ form_widget(address.streetName, {'attr': {'class': 'form-control', 'placeholder':'Enter address strret name'}}) }}
+                    </div>
+                    <div class="form-group">
+                        <label>Type de rue</label>
+                        {{ form_widget(address.streetType, {'attr': {'class': 'form-control', 'placeholder':'Enter address street type'}}) }}
+                    </div>
+                    <div class="form-group">
+                        <label>Ville</label>
+                        {{ form_widget(address.city, {'attr': {'class': 'form-control', 'placeholder':'Enter address city'}}) }}
+                    </div>
+                    <div class="form-group">
+                        <label>Code postale</label>
+                        {{ form_widget(address.zipCode, {'attr': {'class': 'form-control', 'placeholder':'Enter address zip code'}}) }}
+                    </div>
+                </div>
+
+                <br>
+            {% endfor %}
+        </ul>
+    </div>
+    <button type="button"
+            class="add-another-collection-widget btn btn-warning"
+            data-list-selector="#address-fields-list">Add another address
+    </button>
+
+
+    <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    {{ form_end(form,{render_rest:false}) }}
+
+</div>
+<script>
+    // add-collection-widget.js
+    jQuery(document).ready(function () {
+        var btn = $('<input type="button" id="remove" value="remove" class="remove btn btn-danger"/>');
+        $(".js-genus-scientist-item").append(btn);
+
+        $('.js-genus-scientist-item').on('click', '#remove', function (e) {
+            console.log($(e.target).parent());
+            // var counter = $(e.target).parent('#address-fields-list').data('widgetCounter');
+            //
+            $('.js-genus-scientist-item').last().remove();
+            $('.js-genus-scientist-item').children('#remove').last().remove();
+            // counter--;
+        });
+
+        jQuery('.add-another-collection-widget').click(function (e) {
+            var list = jQuery(jQuery(this).attr('data-list-selector'));
+            // Try to find the counter of the list or use the length of the list
+            var counter = list.data('widget-counter') || list.children().length;
+
+            // grab the prototype template
+            var newWidget = list.attr('data-prototype');
+            // replace the "__name__" used in the id and name of the prototype
+            // with a number that's unique to your address
+            // end name attribute looks like name="company[address][2]"
+            newWidget = newWidget.replace(/__name__/g, counter);
+            // Increase the counter
+            counter++;
+            // And store it, the length cannot be used if deleting widgets is allowed
+            list.data('widget-counter', counter);
+
+            // create a new list element and add it to the list
+            var newElem = jQuery(list.attr('data-widget-tags')).html(newWidget);
+            newElem.appendTo(list);
+
+            if (counter > 1) {
+                var btn = $('<input type="button" id="remove" value="remove" class="remove btn btn-danger"/>');
+                $("#address-fields-list").append(btn);
+            }
+
+        });
+
+        $('#address-fields-list').on('click', '#remove', function (e) {
+            var counter = $(e.target).parent('#address-fields-list').data('widgetCounter');
+
+            $('#address-fields-list').children('li').last().remove();
+            $('#address-fields-list').children('#remove').last().remove();
+            counter--;
+        });
+    });
+
+</script>

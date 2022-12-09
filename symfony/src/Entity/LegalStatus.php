@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LegalStatusRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LegalStatusRepository::class)]
@@ -11,13 +13,21 @@ class LegalStatus
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $status = null;
+private ?string $status = null;
 
-    #[ORM\OneToOne(mappedBy: 'legalStatus', cascade: ['persist', 'remove'])]
-    private ?Company $company = null;
+
+    #[ORM\OneToMany(mappedBy: 'legalStatus2', targetEntity: Company::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[Assert\Valid]
+
+private Collection $company;
+
+    public function __construct()
+    {
+        $this->company = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -36,19 +46,32 @@ class LegalStatus
         return $this;
     }
 
-    public function getCompany(): ?Company
+    /**
+     * @return Collection<int, Company>
+     */
+    public function getCompany(): Collection
     {
         return $this->company;
     }
 
-    public function setCompany(Company $company): self
+    public function addCompany(Company $company): self
     {
-        // set the owning side of the relation if necessary
-        if ($company->getLegalStatus() !== $this) {
+        if (!$this->company->contains($company)) {
+            $this->company->add($company);
             $company->setLegalStatus($this);
         }
 
-        $this->company = $company;
+        return $this;
+    }
+
+    public function removeCompany(Company $company): self
+    {
+        if ($this->company->removeElement($company)) {
+            // set the owning side to null (unless already changed)
+            if ($company->getLegalStatus() === $this) {
+                $company->setLegalStatus(null);
+            }
+        }
 
         return $this;
     }

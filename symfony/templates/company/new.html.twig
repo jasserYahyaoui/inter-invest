@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Formulaire de creation d'entreprise{% endblock %}
+
+{% block body %}
+    <h2>Formulaire de creation d'entreprise</h2>
+    <br>
+
+    {{ include('company/_form.html.twig') }}
+
+    <a href="{{ path('app_company_index') }}">back to list</a>
+{% endblock %}

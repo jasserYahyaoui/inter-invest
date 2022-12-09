@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
 class Company
@@ -14,29 +15,31 @@ class Company
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $SIREN = null;
+private ?string $SIREN = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $registrationCity = null;
+private ?string $registrationCity = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $registrationDate = null;
+private ?\DateTimeInterface $registrationDate = null;
 
     #[ORM\Column]
-    private ?float $Capital = null;
+private ?float $Capital = null;
 
-    #[ORM\OneToOne(inversedBy: 'company', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Address::class, cascade: ['persist', 'remove'])]
+    #[Assert\Valid]
+private Collection $Address;
+
+    #[ORM\ManyToOne(inversedBy: 'company2', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?LegalStatus $legalStatus = null;
-
-    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Address::class)]
-    private Collection $Address;
+    #[Assert\Valid]
+private ?LegalStatus $legalStatus = null;
 
     public function __construct()
     {
@@ -108,18 +111,6 @@ class Company
         return $this;
     }
 
-    public function getLegalStatus(): ?LegalStatus
-    {
-        return $this->legalStatus;
-    }
-
-    public function setLegalStatus(LegalStatus $legalStatus): self
-    {
-        $this->legalStatus = $legalStatus;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Address>
      */
@@ -148,4 +139,32 @@ class Company
 
         return $this;
     }
+
+    /**
+     * @param ArrayCollection $Address
+     */
+    public function setAddress($addressCollection)
+    {
+//        dd($addressCollection);
+        if (!empty($addressCollection)) {
+            foreach ($addressCollection as $address) {
+                $this->addAddress($address);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLegalStatus(): ?LegalStatus
+    {
+        return $this->legalStatus;
+    }
+
+    public function setLegalStatus(?LegalStatus $legalStatus): self
+    {
+        $this->legalStatus = $legalStatus;
+
+        return $this;
+    }
+
 }
